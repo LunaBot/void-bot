@@ -20,6 +20,7 @@ const members = new EnhancedMap<string, typeof defaultMember>({
 });
 
 export const store = {
+    ownerID: 107834314439294976n,
     guilds,
     members
 };

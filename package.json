@@ -1,7 +1,7 @@
 {
   "name": "bot",
   "version": "0.0.1",
-  "description": "A simple bot",
+  "description": "A simple void bot!",
   "main": "dist/index.js",
   "devDependencies": {
     "@types/node": "^14.14.37",
@@ -20,6 +20,8 @@
     "chalk": "^4.1.0",
     "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
-    "enmap": "^5.8.4"
+    "enmap": "^5.8.4",
+    "human-interval": "^2.0.1",
+    "pretty-ms": "^7.0.1"
   }
 }

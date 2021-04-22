@@ -3,6 +3,8 @@ dependencies:
   discord.js: 12.5.3
   dotenv: 8.2.0
   enmap: 5.8.4
+  human-interval: 2.0.1
+  pretty-ms: 7.0.1
 devDependencies:
   '@types/node': 14.14.37
   tsup: 4.8.21_typescript@4.2.4
@@ -585,6 +587,12 @@ packages:
     dev: false
     resolution:
       integrity: sha1-4Ob+aijPUROIVeCG0Wkedx3iqLk=
+  /human-interval/2.0.1:
+    dependencies:
+      numbered: 1.1.0
+    dev: false
+    resolution:
+      integrity: sha512-r4Aotzf+OtKIGQCB3odUowy4GfUDTy3aTWTfLd7ZF2gBCy3XW3v/dJLRefZnOFFnjqs5B1TypvS8WarpBkYUNQ==
   /human-signals/2.1.0:
     dev: true
     engines:
@@ -866,6 +874,10 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
+  /numbered/1.1.0:
+    dev: false
+    resolution:
+      integrity: sha512-pv/ue2Odr7IfYOO0byC1KgBI10wo5YDauLhxY6/saNzAdAs0r1SotGCPzzCLNPL0xtrAwWRialLu23AAu9xO1g==
   /object-assign/4.1.1:
     engines:
       node: '>=0.10.0'
@@ -909,6 +921,12 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-ayCKvm/phCGxOkYRSCM82iDwct8/EonSEgCSxWxD7ve6jHggsFl4fZVQBPRNgQoKiuV/odhFrGzQXZwbifC8Rg==
+  /parse-ms/2.1.0:
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-kHt7kzLoS9VBZfUsiKjv43mr91ea+U05EyKkEtqp7vNbHxmaVuEqN7XxeEVnGrMtYOAxGrDElSi96K7EgO1zCA==
   /path-is-absolute/1.0.1:
     dev: true
     engines:
@@ -973,6 +991,14 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-ht3ts5ewK1V0RqqelVVBcZh94WEtk/WCWlIzeuztMLdNe+5/65jPGr3sgQKY6tJhX3ib7glckPYazjkW/K0D/g==
+  /pretty-ms/7.0.1:
+    dependencies:
+      parse-ms: 2.1.0
+    dev: false
+    engines:
+      node: '>=10'
+    resolution:
+      integrity: sha512-973driJZvxiGOQ5ONsFhOF/DtzPMOMtgC11kCpUrPGMTgqp2q/1gwzCquocrN33is0VZ5GFHXZYMM9l6h67v2Q==
   /prism-media/1.2.9:
     dev: false
     peerDependencies:
@@ -1376,5 +1402,7 @@ specifiers:
   discord.js: ^12.5.3
   dotenv: ^8.2.0
   enmap: ^5.8.4
+  human-interval: ^2.0.1
+  pretty-ms: ^7.0.1
   tsup: ^4.8.21
   typescript: ^4.2.4
