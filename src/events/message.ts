@@ -228,12 +228,23 @@ export const onMessage = async function onMessage (message: Message) {
     // Bail if we have a keep phrase set and this message contains it
     if (thisChannel.phrase && message.content.includes(thisChannel.phrase)) return;
 
+    // Add message to store so it'll be deleted even if we restart
+    const messageToDelete = {
+        guildId: message.guild.id,
+        channelId: message.channel.id,
+        messageId: message.id,
+        time: thisChannel.time
+    };
+    store.messagesToDelete.add(messageToDelete);
+
     // After x time delete the message
     setTimeout(async () => {
+        // Delete the message
         await message.delete().catch(async error => {
-            // The message was deleted before we got to it.
+            // Bail if the message was deleted before we got to it
             if (error.code === 10008) return;
 
+            // Report the error
             await message.channel.send(new MessageEmbed({
                 color: colours.RED,
                 author: {
@@ -255,7 +266,10 @@ export const onMessage = async function onMessage (message: Message) {
                     value: error.method,
                     inline: true
                 }]
-            }))
+            }));
         });
+
+        // Remove the message from the store
+        store.messagesToDelete.delete(messageToDelete);
     }, thisChannel.time);
 };
