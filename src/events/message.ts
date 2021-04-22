@@ -231,6 +231,9 @@ export const onMessage = async function onMessage (message: Message) {
     // After x time delete the message
     setTimeout(async () => {
         await message.delete().catch(async error => {
+            // The message was deleted before we got to it.
+            if (error.code === 10008) return;
+
             await message.channel.send(new MessageEmbed({
                 color: colours.RED,
                 author: {
