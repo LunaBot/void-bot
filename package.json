@@ -1,5 +1,5 @@
 {
-  "name": "bot",
+  "name": "void-bot",
   "version": "0.0.1",
   "description": "A simple void bot!",
   "main": "dist/index.js",
