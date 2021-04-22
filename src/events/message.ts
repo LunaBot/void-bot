@@ -1,14 +1,20 @@
+import { client } from '../client';
 import { Message, MessageEmbed } from 'discord.js';
 import { store } from '../store';
 
 // Add custom commands to this
 const commands = new Map([
-    ['help', async (_message: Message, _args: string[]) => {
-        return new MessageEmbed({
+    ['help', async (message: Message, _args: string[]) => {
+        await message.channel.send(new MessageEmbed({
             author: {
-                name: store.name
-            }
-        });
+                name: client.user?.username
+            },
+            description: require('../../package.json').description,
+            fields: [{
+                name: 'Commands',
+                value: [...commands.keys()].map(key => '`' + key + '`').join(', ')
+            }]
+        }));
     }]
 ]);
 
@@ -32,7 +38,7 @@ export const onMessage = async function onMessage (message: Message) {
     const commandFunction = commands.get(command);
 
     // Bail if we don't have that command
-    if (!commandFunction) return;
+    if (commandFunction === undefined) return;
 
     // Run the command
     await Promise.resolve(commandFunction(message, args));

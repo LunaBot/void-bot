@@ -20,7 +20,6 @@ const members = new EnhancedMap<string, typeof defaultMember>({
 });
 
 export const store = {
-    name: require('../../package.json').name,
     guilds,
     members
 };
