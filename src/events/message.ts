@@ -47,6 +47,9 @@ const commands = new Map<string, any>([
             // Get member
             const member = store.members.get(message.author.id!);
 
+            // Get guild
+            const guild = store.guilds.get(message.guild?.id!);
+
             // Get reminder enabled state
             const enabled = member?.reminderEnabled ?? false;
 
@@ -61,7 +64,8 @@ const commands = new Map<string, any>([
                 color: !enabled ? colours.GREEN : colours.RED,
                 author: {
                     name: `Deletion reminder - ${!enabled ? 'enabled' : 'disabled'}!`
-                }
+                },
+                description: `Use \`${guild?.prefix ?? '!'}\`remind-me again to ${enabled ? 'enable' : 'disable'} this.`
             }));
         }
     }],
@@ -226,9 +230,6 @@ const commands = new Map<string, any>([
 ]);
 
 export const onMessage = async function onMessage (message: Message) {
-    // Don't process bot messages
-    if (message.author.bot) return;
-
     // Get command and arguments
     const [commandName, ...args] = message.content.slice(1).trim().split(/ +/);
 
@@ -240,6 +241,9 @@ export const onMessage = async function onMessage (message: Message) {
 
     // If this looks like it might be a command then check it
     if (message.content.startsWith(guild.prefix)) {
+        // Don't process bot commands
+        if (message.author.bot) return;
+
         // Get the associate method for the command
         const command = commands.get(commandName);
 
