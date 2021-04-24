@@ -1,4 +1,6 @@
-export const defaultMember = {};
+export const defaultMember = {
+    reminderEnabled: false
+};
 
 export const defaultGuild = {
     prefix: '!',

@@ -4,6 +4,7 @@ import { Channel, Message, MessageEmbed, MessageReaction } from 'discord.js';
 import { store } from '../store';
 import { colours } from '../utils';
 import prettyMs from 'pretty-ms';
+import { logger } from 'logger';
 
 // Add custom commands to this
 const commands = new Map<string, any>([
@@ -37,6 +38,30 @@ const commands = new Map<string, any>([
                     name: 'Debug'
                 },
                 description: '```json\n' + JSON.stringify(guild) + '\n```',
+            }));
+        }
+    }],
+    // !remind-me
+    ['remind-me', {
+        run: async (message: Message, _args: string[]) => {
+            // Get member
+            const member = store.members.get(message.author.id!);
+
+            // Get reminder enabled state
+            const enabled = member?.reminderEnabled ?? false;
+
+            // Flip the member's reminder state
+            store.members.set(message.author.id, !enabled, 'reminderEnabled');
+
+            // Delete command message
+            await message.delete();
+
+            // Let the member know if the reminder was enable or disabled
+            await message.author.send(new MessageEmbed({
+                color: !enabled ? colours.GREEN : colours.RED,
+                author: {
+                    name: `Deletion reminder - ${!enabled ? 'enabled' : 'disabled'}!`
+                }
             }));
         }
     }],
@@ -178,6 +203,15 @@ const commands = new Map<string, any>([
                 }));
                 return;
             }
+
+            // Don't allow void times over 1 hour
+            if (time > 3600000) {
+                await message.channel.send(new MessageEmbed({
+                    color: colours.RED,
+                    description: 'Time cannot be set for more than 1 hour.'
+                }));
+                return;
+            }
     
             // Set the void time
             store.guilds.set(message.guild.id, time, `voids.${message.channel.id}.time`);
@@ -239,37 +273,58 @@ export const onMessage = async function onMessage (message: Message) {
 
     // After x time delete the message
     setTimeout(async () => {
-        // Delete the message
-        await message.delete().catch(async error => {
-            // Bail if the message was deleted before we got to it
-            if (error.code === 10008) return;
+        try {
+            // Get member 
+            const member = store.members.get(message.author.id);
 
-            // Report the error
-            await message.channel.send(new MessageEmbed({
-                color: colours.RED,
-                author: {
-                    name: 'Error'
-                },
-                description: error.message,
-                fields: [{
-                    name: 'Method',
-                    value: error.method
-                }, {
-                    name: 'Path',
-                    value: error.path
-                }, {
-                    name: 'Code',
-                    value: error.code,
-                    inline: true
-                }, {
-                    name: 'Status code',
-                    value: error.method,
-                    inline: true
-                }]
-            }));
-        });
+            // Message the member if they had reminders on
+            if (member?.reminderEnabled) {
+                // Message member
+                await message.author.send(new MessageEmbed({
+                    color: colours.AQUA,
+                    author: {
+                        name: 'Deletion reminder!'
+                    },
+                    description: `Message deleted in [${message.guild?.channels.cache.get(message.channel.id)?.name}](https://discord.com/channels/${message.guild?.id}/${message.channel.id}/${message.id})`
+                })).catch(error => {
+                    logger.error(`Failed messaging ${message.author.username ?? message.author.id} deletion reminder.`);
+                });
+            }
 
-        // Remove the message from the store
-        store.messagesToDelete.delete(messageToDelete);
+            // Delete the message
+            await message.delete().catch(async error => {
+                // Bail if the message was deleted before we got to it
+                if (error.code === 10008) return;
+
+                // Report the error
+                await message.channel.send(new MessageEmbed({
+                    color: colours.RED,
+                    author: {
+                        name: 'Error'
+                    },
+                    description: error.message,
+                    fields: [{
+                        name: 'Method',
+                        value: error.method
+                    }, {
+                        name: 'Path',
+                        value: error.path
+                    }, {
+                        name: 'Code',
+                        value: error.code,
+                        inline: true
+                    }, {
+                        name: 'Status code',
+                        value: error.method,
+                        inline: true
+                    }]
+                }));
+            });
+
+            // Remove the message from the store
+            store.messagesToDelete.delete(messageToDelete);
+        } catch (error) {
+            console.log(error);
+        }
     }, thisChannel.time);
 };
