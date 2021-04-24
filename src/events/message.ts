@@ -65,7 +65,7 @@ const commands = new Map<string, any>([
                 author: {
                     name: `Deletion reminder - ${!enabled ? 'enabled' : 'disabled'}!`
                 },
-                description: `Use \`${guild?.prefix ?? '!'}\`remind-me again to ${enabled ? 'enable' : 'disable'} this.`
+                description: `Use \`${guild?.prefix ?? '!'}remind-me\` again to ${enabled ? 'enable' : 'disable'} this.`
             }));
         }
     }],
